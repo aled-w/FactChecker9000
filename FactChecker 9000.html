@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Previous head content remains the same -->
+<head>
+    <!-- Previous head content remains exactly the same -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FactChecker 9000</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Previous style content remains exactly the same -->
+    <style>
+        /* All previous styles remain exactly the same */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #ff6b6b;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .disclaimer {
+            background: linear-gradient(45deg, #FFE5E5, #E5F3FF);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #ff6b6b;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #E5F3FF, #E5FFE5);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin: 10px 0;
+            padding: 15px;
+            border: 2px solid #4facfe;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
+        }
+
+        button {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        button:disabled {
+            background: linear-gradient(45deg, #cccccc, #999999);
+            transform: none;
+        }
+
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-card {
+            background: white;
+            border: none;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .confidence-score {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .high-confidence {
+            background: linear-gradient(45deg, #85FFBD, #FFFB7D);
+            color: #2d3436;
+        }
+
+        .medium-confidence {
+            background: linear-gradient(45deg, #FFFB7D, #FFA07A);
+            color: #2d3436;
+        }
+
+        .low-confidence {
+            background: linear-gradient(45deg, #FFA07A, #FF5252);
+            color: white;
+        }
+
+        .loader {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            color: #4facfe;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .article-link {
+            color: #4facfe;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+
+        .article-link:hover {
+            color: #ff6b6b;
+        }
+
+        .verification-status {
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .verified {
+            background: linear-gradient(45deg, #85FFBD, #FFFB7D);
+            color: #2d3436;
+        }
+
+        .unverified {
+            background: linear-gradient(45deg, #FFA07A, #FF5252);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FactChecker 9000</h1>
+        
+        <div class="disclaimer">
+            <strong>Important Disclaimer:</strong>
+            <p>This fact-checker tool should be used as one of many resources in verifying information. Please:</p>
+            <ul>
+                <li>Cross-reference multiple reliable sources</li>
+                <li>Consider potential biases in news reporting</li>
+                <li>Check publication dates and context</li>
+                <li>Verify original sources when possible</li>
+                <li>Be aware that news can evolve as new information emerges</li>
+            </ul>
+        </div>
+
+        <div class="input-section">
+            <label for="content">Paste the social media post or news content to verify:</label>
+            <textarea id="content" placeholder="Enter the content you want to fact-check..."></textarea>
+            <button id="verify-btn">Verify Content 🔍</button>
+        </div>
+
+        <div class="loader">
+            Analyzing content... 🤔
+        </div>
+
+        <div class="results">
+            <h2>Verification Results</h2>
+            <div class="result-card">
+                <div id="verification-status" class="verification-status"></div>
+                <div id="confidence-score" class="confidence-score"></div>
+                <p id="summary"></p>
+                
+                <div class="related-articles">
+                    <h3>Related Verified Articles:</h3>
+                    <div id="articles-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Previous script content remains exactly the same -->
+    <script>
+        // All previous JavaScript code remains exactly the same
+        const mockApi = {
+            async verifyContent(content) {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                let result = {
+                    isVerified: false,
+                    confidenceScore: 0.5,
+                    summary: "Analysis based on available sources.",
+                    relatedArticles: []
+                };
+
+                // Check for Olympic pollution content
+                if (content.toLowerCase().includes('olympic') && content.toLowerCase().includes('polluting')) {
+                    result = {
+                        isVerified: true,
+                        confidenceScore: 0.95,
+                        summary: "This information is accurate according to verified sources. The claim relates to documented concerns about Olympic-related pollution.",
+                        relatedArticles: [{
+                            title: "Paris Olympics' green credentials questioned in new report on pollution",
+                            source: "Independent",
+                            url: "https://www.independent.co.uk/sport/toyota-air-france-antonio-guterres-co2-emissions-britain-b2577591.html",
+                            publishDate: "2023",
+                            reliabilityScore: 0.95
+                        }]
+                    };
+                }
+                
+                // Check for Kamala inflation content
+                else if (content.toLowerCase().includes('kamala') && content.toLowerCase().includes('inflation')) {
+                    result = {
+                        isVerified: false,
+                        confidenceScore: 0.15,
+                        summary: "This claim has been fact-checked and found to be inaccurate.",
+                        relatedArticles: [{
+                            title: "Fact check: Claims about Kamala Harris and inflation",
+                            source: "BBC News",
+                            url: "https://www.bbc.co.uk/news/articles/cwy343z53l1o",
+                            publishDate: "2023",
+                            reliabilityScore: 0.98
+                        }]
+                    };
+                }
+                
+                return result;
+            }
+        };
+
+        $(document).ready(function() {
+            const $verifyBtn = $('#verify-btn');
+            const $content = $('#content');
+            const $loader = $('.loader');
+            const $results = $('.results');
+
+            $verifyBtn.click(async function() {
+                const content = $content.val().trim();
+                
+                if (!content) {
+                    alert('Please enter some content to verify');
+                    return;
+                }
+
+                $loader.show();
+                $verifyBtn.prop('disabled', true);
+                $results.hide();
+
+                try {
+                    const result = await mockApi.verifyContent(content);
+                    
+                    const $verificationStatus = $('#verification-status');
+                    $verificationStatus.text(result.isVerified ? '✓ Verified' : '⚠ Unverified');
+                    $verificationStatus.removeClass('verified unverified');
+                    $verificationStatus.addClass(result.isVerified ? 'verified' : 'unverified');
+                    
+                    const $confidenceScore = $('#confidence-score');
+                    const confidencePercentage = Math.round(result.confidenceScore * 100);
+                    $confidenceScore.text(`Confidence Score: ${confidencePercentage}%`);
+                    
+                    $confidenceScore.removeClass('high-confidence medium-confidence low-confidence');
+                    if (result.confidenceScore >= 0.7) {
+                        $confidenceScore.addClass('high-confidence');
+                    } else if (result.confidenceScore >= 0.4) {
+                        $confidenceScore.addClass('medium-confidence');
+                    } else {
+                        $confidenceScore.addClass('low-confidence');
+                    }
+
+                    $('#summary').text(result.summary);
+
+                    const articlesList = result.relatedArticles.map(article => `
+                        <div class="result-card">
+                            <a href="${article.url}" class="article-link" target="_blank">${article.title}</a>
+                            <p>Source: ${article.source}</p>
+                            <p>Published: ${article.publishDate}</p>
+                            <p>Reliability Score: ${Math.round(article.reliabilityScore * 100)}%</p>
+                        </div>
+                    `).join('');
+                    
+                    $('#articles-list').html(articlesList);
+                    
+                    $results.show();
+                } catch (error) {
+                    alert('Error verifying content. Please try again.');
+                    console.error('Verification error:', error);
+                } finally {
+                    $loader.hide();
+                    $verifyBtn.prop('disabled', false);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
